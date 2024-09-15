@@ -3,8 +3,8 @@ const { serviceTTS } = require('./serviceTTS');
 module.exports = async (request, response) => {
   console.debug(`请求正文：${request.body}`)
   let voiceName = request.query["voiceName"] ?? "zh-CN-XiaoxiaoNeural"
-  let style = request.query["style"] ?? "cheerful"
-  let role = request.query["role"] ?? "Boy"
+  let style = request.query["style"] ?? "General"
+  let role = request.query["role"] ?? ""
   let rate = request.query["rate"] ?? "0"
   let styledegree = request.query["styledegree"] ?? "1.5"
   let pitch = request.query["pitch"] ?? "0"
@@ -23,6 +23,7 @@ xmlns:emo="http://www.w3.org/2009/10/emotionml" xml:lang="zh-CN">
 		<s />
 	</voice>
 </speak>`
+console.debug(`ssml: ${ssml}`)
     let result = await serviceTTS.convert(ssml, format)
 
     response.sendDate = true
