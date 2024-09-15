@@ -1,0 +1,9 @@
+{
+  "name": "azure_tts_studio",
+  "version": "1.0.0",
+  "main": "app.js",
+  "description": "",
+  "scripts": {
+    "start": "node app.js"
+  }
+}
