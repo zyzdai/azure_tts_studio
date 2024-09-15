@@ -9,8 +9,8 @@ module.exports = async (request, response) => {
   let styledegree = request.query["styledegree"] ?? "1.5"
   let pitch = request.query["pitch"] ?? "0"
   let text = request.query["text"] ?? ""
+  let format = request.query["format"] ?? "audio-24khz-48kbitrate-mono-mp3"
   try {
-    let format = request.headers["format"] || "audio-24khz-48kbitrate-mono-mp3"
     let ssml = `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts"
 xmlns:emo="http://www.w3.org/2009/10/emotionml" xml:lang="zh-CN">
 	<voice name="${voiceName}">
