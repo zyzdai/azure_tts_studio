@@ -37,19 +37,16 @@ class Service {
         }
         this.executorMap.clear()
         this.bufferMap.clear()
-        console.info(`连接已关闭： ${reason} ${code}`)
       })
 
       ws.on("message", (message, isBinary) => {
         let pattern = /X-RequestId:(?<id>[a-z|0-9]*)/
         if (!isBinary) {
-          console.debug("收到文本消息：%s", message)
           let data = message.toString()
           if (data.includes("Path:turn.start")) {
             // 开始传输
             let matches = data.match(pattern)
             let requestId = matches.groups.id
-            console.debug(`开始传输：${requestId}……`)
             this.bufferMap.set(requestId, Buffer.from([]))
           } else if (data.includes("Path:turn.end")) {
             // 结束传输
@@ -61,9 +58,6 @@ class Service {
               this.executorMap.delete(matches.groups.id)
               let result = this.bufferMap.get(requestId)
               executor.resolve(result)
-              console.debug(`传输完成：${requestId}……`)
-            } else {
-              console.debug(`请求已被丢弃：${requestId}`)
             }
           }
         } else if (isBinary) {
@@ -77,21 +71,14 @@ class Service {
 
           let content = data.slice(contentIndex)
 
-          console.debug(
-            `收到音频片段：${requestId} Length: ${content.length}\n${headers}`
-          )
-
           let buffer = this.bufferMap.get(requestId)
           if (buffer) {
             buffer = Buffer.concat([buffer, content])
             this.bufferMap.set(requestId, buffer)
-          } else {
-            console.debug(`请求已被丢弃：${requestId}`)
           }
         }
       })
       ws.on("error", error => {
-        console.error(`连接失败： ${error}`)
         reject(`连接失败： ${error}`)
       })
       ws.on("ping", data => {
@@ -105,10 +92,8 @@ class Service {
 
   async convert(ssml, format) {
     if (this.ws == null || this.ws.readyState != WebSocket.OPEN) {
-      console.info("准备连接服务器……")
       let connection = await this.connect()
       this.ws = connection
-      console.info("连接成功！")
     }
     const requestId = randomBytes(16)
       .toString("hex")
@@ -139,8 +124,6 @@ class Service {
         "Content-Type:application/json; charset=utf-8\r\n" +
         "Path:speech.config\r\n\r\n" +
         JSON.stringify(configData)
-      console.info(`开始转换：${requestId}……`)
-      console.debug(`准备发送配置请求：${requestId}\n`, configMessage)
       this.ws.send(configMessage, configError => {
         if (configError) {
           console.error(`配置请求发送失败：${requestId}\n`, configError)
@@ -153,7 +136,6 @@ class Service {
           `Content-Type:application/ssml+xml\r\n` +
           `Path:ssml\r\n\r\n` +
           ssml
-        console.debug(`准备发送SSML消息：${requestId}\n`, ssmlMessage)
         this.ws.send(ssmlMessage, ssmlError => {
           if (ssmlError) {
             console.error(`SSML消息发送失败：${requestId}\n`, ssmlError)
@@ -164,14 +146,11 @@ class Service {
 
     // 收到请求，清除超时定时器
     if (this.timer) {
-      console.debug("收到新的请求，清除超时定时器")
       clearTimeout(this.timer)
     }
     // 设置定时器，超过10秒没有收到请求，主动断开连接
-    console.debug("创建新的超时定时器")
     this.timer = setTimeout(() => {
       if (this.ws && this.ws.readyState == WebSocket.OPEN) {
-        console.debug("已经 10 秒没有请求，主动关闭连接")
         this.ws.close(1000)
         this.timer = null
       }
@@ -188,9 +167,6 @@ class Service {
         }, 10000)
       })
     ])
-    console.info(`转换完成：${requestId}`)
-    console.info(`剩余 ${this.executorMap.size} 个任务`)
-    console.log(data)
     return data
   }
 }
