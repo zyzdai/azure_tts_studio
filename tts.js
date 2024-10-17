@@ -1,15 +1,14 @@
 const { serviceTTS } = require('./serviceTTS');
 
 module.exports = async (request, response) => {
-  console.debug(`请求正文：${request.body}`)
-  let voiceName = request.query["voiceName"] ?? "zh-CN-XiaoxiaoNeural"
-  let style = request.query["style"] ?? "General"
-  let role = request.query["role"] ?? ""
-  let rate = request.query["rate"] ?? "0"
-  let styledegree = request.query["styledegree"] ?? "1.5"
-  let pitch = request.query["pitch"] ?? "0"
-  let text = request.query["text"] ?? ""
-  let format = request.query["format"] ?? "audio-24khz-48kbitrate-mono-mp3"
+    let voiceName = request.body["voiceName"] ?? "zh-CN-XiaoxiaoNeural"
+  let style = request.body["style"] ?? "General"
+  let role = request.body["role"] ?? ""
+  let rate = request.body["rate"] ?? "0"
+  let styledegree = request.body["styledegree"] ?? "1.5"
+  let pitch = request.body["pitch"] ?? "0"
+  let text = request.body["text"] ?? ""
+  let format = request.body["format"] ?? "audio-24khz-48kbitrate-mono-mp3"
   try {
     let ssml = `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts"
 xmlns:emo="http://www.w3.org/2009/10/emotionml" xml:lang="zh-CN">
@@ -23,7 +22,6 @@ xmlns:emo="http://www.w3.org/2009/10/emotionml" xml:lang="zh-CN">
 		<s />
 	</voice>
 </speak>`
-console.debug(`ssml: ${ssml}`)
     let result = await serviceTTS.convert(ssml, format)
 
     response.sendDate = true
