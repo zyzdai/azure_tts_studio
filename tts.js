@@ -21,6 +21,7 @@ xmlns:emo="http://www.w3.org/2009/10/emotionml" xml:lang="zh-CN">
 		</mstts:express-as>
 	</voice>
 </speak>`
+	  console.log(ssml);
     let result = await serviceTTS.convert(ssml, format)
     response.sendDate = true
     response
