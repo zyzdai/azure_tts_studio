@@ -8,7 +8,6 @@ app.use(express.json());
 app.get('/', (req, res) => {
     res.send('Hello World!');
 })
-// app.get('/tts', require('./tts'))
 
 app.post('/tts', require('./tts'))
 
