@@ -1,6 +1,7 @@
 const { serviceTTS } = require('./serviceTTS');
 
 module.exports = async (request, response) => {
+  console.log(JSON.stringify(request.body));
   let voiceName = request.body["voiceName"] ?? "zh-CN-XiaoxiaoNeural"
   let style = request.body["style"] ?? "General"
   let role = request.body["role"] ?? ""
