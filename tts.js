@@ -1,12 +1,9 @@
 const { serviceTTS } = require('./serviceTTS');
 
 module.exports = async (request, response) => {
-  console.log(JSON.stringify(request.body));
   let voiceName = request.body["voiceName"] ?? "zh-CN-XiaoxiaoNeural"
-  let style = request.body["style"] ?? "General"
   let role = request.body["role"] ?? ""
   let rate = request.body["rate"] ?? "0"
-  let styledegree = request.body["styledegree"] ?? "1.5"
   let pitch = request.body["pitch"] ?? "0"
   let text = request.body["text"] ?? ""
   let format = request.body["format"] ?? "audio-24khz-48kbitrate-mono-mp3"
@@ -14,14 +11,13 @@ module.exports = async (request, response) => {
     let ssml = `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts"
 xmlns:emo="http://www.w3.org/2009/10/emotionml" xml:lang="zh-CN">
 	<voice name="${voiceName}">
-		<mstts:express-as style="${style}" styledegree="${styledegree}">
+		<mstts:express-as role="${role}">
       <prosody rate="${rate}%" pitch="${pitch}%">
 				${text}
 			</prosody>
 		</mstts:express-as>
 	</voice>
 </speak>`
-	  console.log(ssml);
     let result = await serviceTTS.convert(ssml, format)
     response.sendDate = true
     response
