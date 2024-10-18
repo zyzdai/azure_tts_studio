@@ -154,7 +154,7 @@ class Service {
         this.ws.close(1000)
         this.timer = null
       }
-    }, 10000)
+    }, 100000)
 
     let data = await Promise.race([
       result,
